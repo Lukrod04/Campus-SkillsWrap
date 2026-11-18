@@ -1,6 +1,14 @@
 # Public deployment on Render
 
-The app is prepared for Render, but has not been deployed yet. Connect the Render plugin to continue from the conversation. This configuration uses a paid web service and persistent disk; confirm the current charges in Render before creating them.
+## Free demo
+
+In Render, create a Blueprint from the Campus SkillSwap repository. Set **Branch** to `main` and **Blueprint Path** to `render-free.yaml`. Check that the preview shows a Free web service, then click **Deploy Blueprint**. Share the HTTPS URL from the service page.
+
+The free service uses temporary SQLite storage. Accounts, posts, sessions, and reviews are reset on restarts, redeploys, and spin-downs. Startup recreates the sample listings.
+
+## Deployment with a persistent disk
+
+The `render.yaml` Blueprint uses a paid web service and persistent disk. Review the charges in Render before deploying.
 
 1. Put the contents of this folder in a dedicated Git repository. Do not upload the parent workspace, `.venv`, secrets, or your local database.
 2. In Render, create a Blueprint from that repository. The included `render.yaml` configures Python, Gunicorn, static files, HTTPS settings and SQLite on a persistent disk.

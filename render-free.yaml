@@ -1,0 +1,15 @@
+# A demo deployment with temporary SQLite storage.
+services:
+  - type: web
+    name: campus-skillswap-demo
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-production.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && python manage.py seed_skills && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --access-logfile -
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.12
+      - key: DJANGO_DEBUG
+        value: "0"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
