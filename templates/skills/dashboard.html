@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="mb-2">Hey, {{ user.username }}.</h1><p class="text-secondary mb-4">Your skills, your connections, your next learning moment.</p>
+<a class="btn btn-primary mb-4" href="{% url 'skill_create' %}">Share a new skill</a>
+<h2 class="h4">My skill posts</h2>
+{% for skill in skills %}<div class="card p-3 mb-2"><a href="{% url 'skill_detail' skill.pk %}">{{ skill.title }}</a><span class="small text-secondary">{{ skill.category }}</span></div>{% empty %}<p>No posts yet. What can you teach?</p>{% endfor %}
+<h2 class="h4 mt-4">Students learning from me</h2>
+{% for session in incoming %}<div class="card p-3 mb-2"><p>{{ session.learner.username }} · {{ session.skill.title }}</p>
+<p><strong>Proposed time:</strong> {{ session.preferred_time|default:"Not specified" }}<br><strong>Meeting place:</strong> {{ session.meeting_place|default:"Not specified" }}</p>{% if session.completed %}<span class="text-success fw-bold">Completed</span>{% else %}<p>{% if session.confirmed %}Meeting confirmed{% else %}Requested - awaiting your confirmation{% endif %}</p>{% if not session.confirmed %}<form method="post" action="{% url 'confirm_session' session.pk %}">{% csrf_token %}<button class="btn btn-primary mb-2">Confirm meeting</button></form>{% endif %}<form method="post" action="{% url 'complete_session' session.pk %}">{% csrf_token %}<button class="btn btn-outline-primary">Mark session complete</button></form><small class="mt-2">Confirm the meeting details first. Mark the session complete only after you have taught it.</small>{% endif %}</div>{% empty %}<p>No session requests yet.</p>{% endfor %}
+<h2 class="h4 mt-4">Skills I'm learning</h2><p class="small text-secondary">Requested &rarr; Meeting confirmed &rarr; Completed &rarr; Leave a review</p>
+{% for session in sessions %}<div class="card p-3 mb-2"><a href="{% url 'skill_detail' session.skill.pk %}">{{ session.skill.title }}</a><p><strong>Proposed time:</strong> {{ session.preferred_time|default:"Not specified" }}<br><strong>Meeting place:</strong> {{ session.meeting_place|default:"Not specified" }}</p><span>{% if session.completed %}Completed</span><a class="btn btn-primary mt-2" href="{% url 'skill_detail' session.skill.pk %}#review-form">Leave or update a review</a><span>{% else %}{% if session.confirmed %}Meeting confirmed{% else %}Requested - awaiting provider confirmation{% endif %}{% endif %}</span></div>{% empty %}<p>Explore a skill and request your first session.</p>{% endfor %}
+{% endblock %}

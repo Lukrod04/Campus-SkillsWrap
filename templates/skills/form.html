@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card p-4 mx-auto form-panel shadow-sm">
+  <h1 class="h3 mb-4">{{ heading }}</h1>
+  <p class="text-secondary">{% if submit_label == 'Create account' %}Choose a username and password to start sharing and learning.{% else %}Use clear details to help other students know what to expect.{% endif %}</p>
+  <form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">{{ submit_label }}</button> <a href="{% url 'skill_list' %}" class="btn btn-outline-secondary">Cancel</a></form>
+</section>
+{% endblock %}

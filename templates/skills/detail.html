@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'skill_list' %}">← Explore all skills</a>
+<div class="row g-4 mt-1">
+  <div class="col-lg-8">
+    <article class="card p-4 mb-4"><div><span class="badge category mb-3">{{ skill.category }}</span></div>
+      <h1>{{ skill.title }}</h1><p class="text-secondary">Shared by {{ skill.owner.username }}</p>
+      <div>{{ skill.description|linebreaks }}</div>
+      {% if average %}<p>★ {{ average|floatformat:1 }} / 5</p>{% endif %}
+      {% if user == skill.owner %}<div><a class="btn btn-primary" href="{% url 'skill_edit' skill.pk %}">Edit skill</a> <a class="btn btn-outline-danger" href="{% url 'skill_delete' skill.pk %}">Delete skill</a></div>
+      {% elif user.is_authenticated %}
+        {% if session %}<p class="fw-semibold">{% if session.completed %}Session complete — thanks for learning together!{% else %}{% if session.confirmed %}Meeting confirmed. Check your dashboard for details.{% else %}Session requested. Waiting for the provider to confirm.{% endif %}{% endif %}</p>
+        {% else %}<form method="post" action="{% url 'request_session' skill.pk %}">{% csrf_token %}{{ session_form.as_p }}<button class="btn btn-primary">Request a session</button></form><p class="small text-secondary mt-2">Suggest a meeting above. The provider can confirm it from their dashboard. Meeting details are only shown to you and the provider.</p>{% endif %}
+      {% else %}<a href="{% url 'login' %}?next={{ request.path }}">Log in to request a session</a>{% endif %}
+    </article>
+    <h2 class="h4">Student reviews</h2>
+    {% for review in reviews %}<article class="card p-4 mb-3"><h3 class="h6">{{ review.author.username }} · {{ review.rating }} / 5</h3><p class="small text-secondary">{{ review.created_at|date:'M j, Y' }}</p><div>{{ review.comment|linebreaks }}</div></article>
+    {% empty %}<p class="text-secondary">No reviews yet. Reviews unlock after a completed session.</p>{% endfor %}
+  </div>
+  <aside class="col-lg-4"><section class="card p-4" id="review-form">
+    <h2 class="h4">Share your experience</h2>
+    {% if can_review %}<p>You can save or update your review below.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Save review</button></form>
+    {% else %}<p>Once the provider marks your session complete, you can leave a rating from 1 to 5 and a written review.</p>{% endif %}
+  </section></aside>
+</div>
+{% endblock %}

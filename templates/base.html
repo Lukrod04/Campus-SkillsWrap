@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus SkillSwap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root { --baylor-green: #154734; --baylor-gold: #ffb81c; --bs-link-color: #154734; --bs-link-hover-color: #0c3022; }
+    body { background: #f7f7f0; color: #203b30; }
+    .navbar { background: var(--baylor-green); border-bottom: 4px solid var(--baylor-gold); }
+    .navbar-brand { letter-spacing: -.025em; }
+    .hero { background: #eaf0e8; border-radius: 1.5rem; border-top: 6px solid var(--baylor-gold); }
+    .hero h1 { color: var(--baylor-green); }
+    .card { border: 1px solid #dce4d9; border-radius: 1rem; }
+    .btn-primary { --bs-btn-bg: #154734; --bs-btn-border-color: #154734; --bs-btn-hover-bg: #0c3022; --bs-btn-hover-border-color: #0c3022; --bs-btn-active-bg: #0c3022; --bs-btn-active-border-color: #0c3022; --bs-btn-focus-shadow-rgb: 21,71,52; }
+    .btn-outline-primary { --bs-btn-color: #154734; --bs-btn-border-color: #154734; --bs-btn-hover-bg: #154734; --bs-btn-hover-border-color: #154734; --bs-btn-active-bg: #154734; --bs-btn-active-border-color: #154734; --bs-btn-focus-shadow-rgb: 21,71,52; }
+    .navbar .btn-light { --bs-btn-color: #154734; --bs-btn-bg: #ffb81c; --bs-btn-border-color: #ffb81c; --bs-btn-hover-color: #154734; --bs-btn-hover-bg: #ffd06b; --bs-btn-hover-border-color: #ffd06b; }
+    .category { background: #fff0c6; color: #154734; }
+    .alert-info { background: #eaf0e8; border-color: #becfbd; color: #154734; }
+    .form-control:focus, input:focus, textarea:focus, select:focus { border-color: #154734; box-shadow: 0 0 0 .2rem rgb(21 71 52 / 18%); }
+    .form-panel { max-width: 640px; }
+    body { line-height: 1.65; }
+    .btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    .badge { white-space: normal; text-align: left; }
+    .card, .navbar-brand { overflow-wrap: anywhere; }
+    #review-form { scroll-margin-top: 1.5rem; }
+    input:not([type=hidden]), textarea, select { display: block; width: 100%; padding: .65rem; border: 1px solid #8794ac; border-radius: .5rem; }
+    .helptext { display: block; font-size: .875rem; color: #566176; }
+    .errorlist { color: #b02a37; }
+    a:focus-visible, button:focus-visible { outline: 3px solid var(--baylor-gold); outline-offset: 3px; }
+  </style>
+</head>
+<body>
+  <a class="visually-hidden-focusable" href="#main">Skip to content</a>
+  <nav class="navbar navbar-expand-lg navbar-dark mb-4" aria-label="Main navigation">
+    <div class="container gap-3">
+      <a class="navbar-brand fw-bold" href="{% url 'skill_list' %}">Campus SkillSwap</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="mainNav"><div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center ms-lg-auto py-3 py-lg-0">
+        <a class="text-white" href="{% url 'skill_list' %}">Explore</a>
+        {% if user.is_authenticated %}
+          <span class="text-white small">Hi, {{ user.username }}</span>
+          <a class="text-white" href="{% url 'dashboard' %}">My dashboard</a>
+          <a class="btn btn-light btn-sm" href="{% url 'skill_create' %}">Share a skill</a>
+          <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="btn btn-outline-light btn-sm">Log out</button></form>
+        {% else %}
+          <a class="text-white" href="{% url 'login' %}">Log in</a>
+          <a class="btn btn-light btn-sm" href="{% url 'register' %}">Join the community</a>
+        {% endif %}
+      </div></div>
+    </div>
+  </nav>
+  <main class="container pb-5" id="main">
+    {% for message in messages %}<div class="alert alert-info" role="status">{{ message }}</div>{% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="container border-top py-4 text-secondary"><p class="fw-semibold mb-1">Bears helping Bears. Share a skill. Build your community.</p><p class="small mb-0">Campus SkillSwap &middot; A student project inspired by Baylor.</p></footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

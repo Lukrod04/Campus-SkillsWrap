@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="hero p-4 p-md-5 mb-4">
+  <p class="text-uppercase fw-bold small">Baylor community &middot; Waco, Texas</p>
+  <h1 class="display-5 fw-bold">Learn something new.<br>Share what you know.</h1>
+  <p class="lead">Bears helping Bears: find a study buddy, share your talents, and learn something new together.</p>
+  <form method="get" action="{% url 'skill_list' %}" class="mt-4">
+    <input type="hidden" name="category" value="{{ selected_category }}">
+    <label for="search" class="form-label fw-semibold">Search by skill title or category</label>
+    <div class="d-flex flex-column flex-sm-row gap-2">
+      <input id="search" name="q" value="{{ query }}" placeholder="Try Python, music, or tutoring" class="form-control">
+      <button class="btn btn-primary px-4">Search</button>
+      {% if query %}<a class="btn btn-outline-secondary" href="{% url 'skill_list' %}">Clear</a>{% endif %}
+    </div>
+  </form>
+</section>
+<p class="text-secondary mb-4"><strong>Start here:</strong> Find a skill, request a session, then leave a review after learning together.</p>
+<nav class="d-flex flex-wrap gap-2 mb-4" aria-label="Filter skills by category">
+  <a class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}" href="?q={{ query|urlencode }}" {% if not selected_category %}aria-current="true"{% endif %}>All categories</a>
+  {% for category in categories %}<a class="btn btn-sm {% if category == selected_category %}btn-primary{% else %}btn-outline-primary{% endif %}" href="?q={{ query|urlencode }}&amp;category={{ category|urlencode }}" {% if category == selected_category %}aria-current="true"{% endif %}>{{ category }}</a>{% endfor %}
+</nav>
+<p class="text-secondary">{{ skills|length }} skill{{ skills|length|pluralize }} found{% if selected_category %} in {{ selected_category }}{% endif %}</p>
+<h2 class="h4 mb-4">{% if query %}Results for “{{ query }}”{% else %}Discover skills on campus{% endif %}</h2>
+<div class="row g-4">
+  {% for skill in skills %}
+  <div class="col-md-6 col-lg-4">
+    <article class="card h-100 shadow-sm"><div class="card-body d-flex flex-column align-items-start p-4">
+      <span class="badge category mb-3">{{ skill.category }}</span>
+      <h3 class="h5"><a href="{% url 'skill_detail' skill.pk %}" class="text-decoration-none">{{ skill.title }}</a></h3>
+      <p class="text-secondary small">Shared by {{ skill.owner.username }}</p>
+      <p>{{ skill.description|truncatewords:24 }}</p>
+      <p class="mt-auto small">{% if skill.review_count %}★ {{ skill.average_rating|floatformat:1 }} / 5 · {{ skill.review_count }} review{{ skill.review_count|pluralize }}{% else %}New here · Be the first to learn{% endif %}</p>
+      <a class="btn btn-outline-primary" href="{% url 'skill_detail' skill.pk %}">View skill</a>
+    </div></article>
+  </div>
+  {% empty %}<div class="col-12"><div class="card p-4"><h3 class="h5">No skills found</h3><p>Try a different title or category, or share the first skill.</p><a href="{% url 'skill_create' %}">Share a skill</a></div></div>{% endfor %}
+</div>
+{% endblock %}

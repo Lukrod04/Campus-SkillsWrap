@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card p-4 form-panel mx-auto"><h1 class="h3">Delete {{ skill.title }}?</h1>
+<p>This also deletes its session records and reviews.</p>
+<form method="post">{% csrf_token %}<button class="btn btn-danger">Delete skill</button> <a href="{% url 'skill_detail' skill.pk %}" class="btn btn-outline-secondary">Cancel</a></form></section>
+{% endblock %}
